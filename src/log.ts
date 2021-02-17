@@ -57,12 +57,12 @@ const log = (
         res.on("end", chunk => {
           const body = Buffer.concat(chunks);
           const bodyParsed = JSON.parse(body.toString());
-          console.log(bodyParsed);
+          process.env.LOGGER_VERBOSE && console.log(bodyParsed);
           resolve(bodyParsed);
         });
 
         res.on("error", error => {
-          console.error(error);
+          process.env.LOGGER_VERBOSE && console.error(error);
           reject({ status: 500, error });
         });
       }

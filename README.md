@@ -23,3 +23,7 @@ set the env variable `LOGGER_URL` to the logger service.
 ## Disable log stream
 
 set the env variable `LOGGER_ENABLED` to false
+
+## Enable/disable verbose log outputs
+
+set the env variable `LOGGER_VERBOSE` to true
