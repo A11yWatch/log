@@ -13,13 +13,14 @@ jobs:
             - node-v1-{{ .Branch }}-
             - node-v1-
       - run:
-          command: npm install && npm test
+          command: npm install && LOGGER_URL=$LOGGER_URL npm test
       - save_cache:
           paths:
             - ~/usr/local/lib/node_modules
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - codecov/upload:
           file: "./coverage/clover.xml"
+
 workflows:
   build_and_test:
     jobs:
