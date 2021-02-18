@@ -21,9 +21,6 @@ const log = (
   message: string = "",
   { platform = "node", type = "info", container = "cdn-server" }: LogInput = {}
 ): Promise<Status> => {
-  if (!process.env.LOGGER_ENABLED) {
-    return console[typeof console[type] === "function" ? type : "log"](message);
-  }
   const data = JSON.stringify({
     message,
     platform,

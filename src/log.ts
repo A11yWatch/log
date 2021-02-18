@@ -8,7 +8,11 @@ import { fork } from "child_process";
 import type { LogInput } from './types'
 
 const log = (message: string, options: LogInput): void => {
-  const child = fork(`${__dirname}/log-event.js`, [], { detached: true });
+  if (!process.env.LOGGER_ENABLED) {
+    const type = options?.type ?? 'log';
+    return console[typeof console[type] === "function" ? type : "log"](message);
+  }
+  const child = fork(`${__dirname}/log-event`, [], { detached: true });
   child.send({message, options});
   child.unref();
 };
