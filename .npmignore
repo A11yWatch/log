@@ -1,2 +1,8 @@
-README.md
+*.md
 src
+__tests__
+.circleci
+coverage
+types
+tsconfig.json
+jest.config.js

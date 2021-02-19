@@ -4,15 +4,18 @@ log reports to a11ywatch logger service
 
 ## Installation
 
-`npm install @a11ywatch/log`
+`npm i @a11ywatch/log`
 
 ```typescript
-const { log } = require("@a11ywatch/log");
+const { log, setConfig } = require("@a11ywatch/log");
+
+setConfig({ container: "api" });
+// out -> { container } logged in each request
 
 log("saved something to db", {
   type: "info",
   container: "api",
-  platform: "node"
+  platform: "chrome"
 });
 ```
 
@@ -22,7 +25,7 @@ set the env variable `LOGGER_URL` to the logger service.
 
 ## Disable log stream
 
-set the env variable `LOGGER_ENABLED` to false
+set the env variable `LOGGER_ENABLED` to false. This will perform logs on the host console instead of logger service.
 
 ## Enable/disable verbose log outputs
 

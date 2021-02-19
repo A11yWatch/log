@@ -4,7 +4,8 @@
  * LICENSE file in the root directory of this source tree.
  **/
 import { request } from "http";
-import type { LogInput, Status } from './types'
+import { config } from "./config";
+import type { LogInput, Status } from "./types";
 
 const options = {
   method: "POST",
@@ -19,13 +20,13 @@ const options = {
 
 const log = (
   message: string = "",
-  { platform = "node", type = "info", container = "cdn-server" }: LogInput = {}
+  { platform = "node", type = "info", container }: LogInput = {}
 ): Promise<Status> => {
   const data = JSON.stringify({
     message,
     platform,
     type,
-    container
+    container: container ?? config?.container
   });
 
   return new Promise((resolve, reject) => {
