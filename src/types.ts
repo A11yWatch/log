@@ -8,6 +8,9 @@ export type LogInput = {
   container?: string;
   type?: string;
   platform?: string;
+  config?: {
+    container: string;
+  };
 };
 
 export type Status = {

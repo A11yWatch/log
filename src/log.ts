@@ -5,15 +5,16 @@
  **/
 
 import { fork } from "child_process";
-import type { LogInput } from './types'
+import { config } from "./config";
+import type { LogInput } from "./types";
 
 const log = (message: string, options: LogInput): void => {
   if (!process.env.LOGGER_ENABLED) {
-    const type = options?.type ?? 'log';
+    const type = options?.type ?? "log";
     return console[typeof console[type] === "function" ? type : "log"](message);
   }
   const child = fork(`${__dirname}/log-event`, [], { detached: true });
-  child.send({message, options});
+  child.send({ message, options, config });
   child.unref();
 };
 

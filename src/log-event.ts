@@ -4,7 +4,6 @@
  * LICENSE file in the root directory of this source tree.
  **/
 import { request } from "http";
-import { config } from "./config";
 import type { LogInput, Status } from "./types";
 
 const options = {
@@ -20,7 +19,8 @@ const options = {
 
 const log = (
   message: string = "",
-  { platform = "node", type = "info", container }: LogInput = {}
+  { platform = "node", type = "info", container }: LogInput = {},
+  config: LogInput
 ): Promise<Status> => {
   const data = JSON.stringify({
     message,
@@ -30,39 +30,45 @@ const log = (
   });
 
   return new Promise((resolve, reject) => {
-    const req = request(
-      Object.assign({}, options, {
-        hostname: process.env.LOGGER_URL || "logger"
-      }),
-      (res: any) => {
-        const chunks: Buffer[] = [];
+    try {
+      const req = request(
+        Object.assign({}, options, {
+          hostname: process.env.LOGGER_URL || "logger",
+          port: process.env.NODE_ENV === "production" ? 0 : options.port
+        }),
+        (res: any) => {
+          const chunks: Buffer[] = [];
 
-        res.on("data", chunk => {
-          chunks.push(chunk);
-        });
+          res.on("data", chunk => {
+            chunks.push(chunk);
+          });
 
-        res.on("end", chunk => {
-          const body = Buffer.concat(chunks);
-          const bodyParsed = JSON.parse(body.toString());
-          process.env.LOGGER_VERBOSE && console.log(bodyParsed);
-          resolve(bodyParsed);
-        });
+          res.on("end", chunk => {
+            const body = Buffer.concat(chunks);
+            const bodyParsed = JSON.parse(body.toString());
+            process.env.LOGGER_VERBOSE && console.log(bodyParsed);
+            resolve(bodyParsed);
+          });
 
-        res.on("error", error => {
-          process.env.LOGGER_VERBOSE && console.error(error);
-          reject({ status: 500, error });
-        });
-      }
-    );
+          res.on("error", error => {
+            process.env.LOGGER_VERBOSE && console.error(error);
+            reject({ status: 500, error });
+          });
+        }
+      );
 
-    req.write(data);
-    req.end();
+      req.write(data);
+      req.end();
+    } catch (e) {
+      console.error(e);
+      reject({ status: 503, error: e });
+    }
   });
 };
 
-process.on("message", async ({ message, options }) => {
+process.on("message", async ({ message, options, config }) => {
   try {
-    await log(message, options);
+    await log(message, options, config);
   } catch (e) {
     console.error(e);
   }
