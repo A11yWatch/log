@@ -13,9 +13,13 @@ const log = (message: string, options: LogInput): void => {
     const type = options?.type ?? "log";
     return console[typeof console[type] === "function" ? type : "log"](message);
   }
-  const child = fork(`${__dirname}/log-event`, [], { detached: true });
-  child.send({ message, options, config });
-  child.unref();
+  try {
+    const child = fork(`${__dirname}/log-event`, [], { detached: true });
+    child.send({ message, options, config });
+    child.unref();
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export { log };
