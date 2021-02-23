@@ -10,6 +10,7 @@ export type LogInput = {
   platform?: string;
   config?: {
     container: string;
+    disabled: boolean;
   };
 };
 

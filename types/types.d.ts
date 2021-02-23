@@ -4,6 +4,7 @@ export declare type LogInput = {
     platform?: string;
     config?: {
         container: string;
+        disabled: boolean;
     };
 };
 export declare type Status = {

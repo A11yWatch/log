@@ -5,13 +5,19 @@
  **/
 import type { LogInput } from "./types";
 
-const config: LogInput = {
-  container: ""
+const config: LogInput["config"] = {
+  container: "",
+  disabled: false
 };
 
-const setConfig = (newConfig: LogInput): void => {
-  if (newConfig?.container) {
-    config.container = newConfig.container;
+const setConfig = (newConfig: LogInput["config"]): void => {
+  if (newConfig) {
+    if (newConfig?.container) {
+      config.container = newConfig.container;
+    }
+    if ("disabled" in newConfig) {
+      config.disabled = newConfig.disabled;
+    }
   }
 };
 

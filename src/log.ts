@@ -11,7 +11,7 @@ import type { LogInput } from "./types";
 const child = fork(`${__dirname}/log-event`, [], { detached: true });
 
 const log = (message: string, options: LogInput): void => {
-  if (!process.env.LOGGER_ENABLED) {
+  if (!process.env.LOGGER_ENABLED || (config && config.disabled)) {
     const type = options?.type ?? "log";
     return console[typeof console[type] === "function" ? type : "log"](message);
   }
