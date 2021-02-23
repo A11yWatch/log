@@ -3,8 +3,8 @@ export declare type LogInput = {
     type?: string;
     platform?: string;
     config?: {
-        container: string;
-        disabled: boolean;
+        container?: string;
+        disabled?: boolean;
     };
 };
 export declare type Status = {

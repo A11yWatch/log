@@ -4,20 +4,22 @@
  * LICENSE file in the root directory of this source tree.
  **/
 
-import { fork } from "child_process";
+import { spawn } from "child_process";
 import { config } from "./config";
 import type { LogInput } from "./types";
 
-const child = fork(`${__dirname}/log-event`, [], { detached: true });
-
-const log = (message: string, options: LogInput): void => {
-  if (!process.env.LOGGER_ENABLED || (config && config.disabled)) {
+const log = (message: string, options?: LogInput): void => {
+  if (!process.env.LOGGER_ENABLED || config?.disabled) {
     const type = options?.type ?? "log";
-    return console[typeof console[type] === "function" ? type : "log"](message);
+    return typeof console[type] === "function" && console[type](message);
   }
   try {
-    child.send({ message, options, config });
-    child.unref();
+    spawn("node", [
+      `${__dirname}/log-event.${
+        process.env.NODE_ENV === "production" ? "js" : "ts"
+      }`,
+      JSON.stringify([message, options, config])
+    ]).unref();
   } catch (e) {
     console.error(e);
   }

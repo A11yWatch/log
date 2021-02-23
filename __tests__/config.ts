@@ -10,6 +10,6 @@ describe("Configs", () => {
     const container = "jest";
     setConfig({ container });
 
-    expect(config.container).toEqual(container);
+    expect(config?.container).toEqual(container);
   });
 });

@@ -3,8 +3,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  **/
-import { request } from "http";
-import type { LogInput, Status } from "./types";
+const { request } = require("http");
 
 const options = {
   method: "POST",
@@ -18,28 +17,29 @@ const options = {
 };
 
 const log = (
-  message: string = "",
-  { platform = "node", type = "info", container }: LogInput = {},
-  config: LogInput
-): Promise<Status> => {
-  const data = JSON.stringify({
-    message,
-    platform,
-    type,
-    container: container ?? config?.container
-  });
-
+  message = "",
+  { platform = "node", type = "info", container = "" } = {},
+  config
+) => {
   return new Promise((resolve, reject) => {
     try {
+      const data = JSON.stringify({
+        message,
+        platform,
+        type,
+        container: container || (config && config.container)
+      });
+
       const req = request(
         Object.assign({}, options, {
           hostname: process.env.LOGGER_URL || "logger",
           port: process.env.NODE_ENV === "production" ? 0 : options.port
         }),
-        (res: any) => {
-          const chunks: Buffer[] = [];
+        res => {
+          const chunks = [];
 
           res.on("data", chunk => {
+            // @ts-ignore
             chunks.push(chunk);
           });
 
@@ -66,10 +66,9 @@ const log = (
   });
 };
 
-process.on("message", async ({ message, options, config }) => {
-  try {
-    await log(message, options, config);
-  } catch (e) {
-    console.error(e);
-  }
-});
+try {
+  const [message, options, config] = JSON.parse(process.argv[2]);
+  log(message, options || {}, config).then(data => data);
+} catch (e) {
+  console.error(e);
+}
