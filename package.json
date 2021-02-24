@@ -1,6 +1,6 @@
 {
   "name": "@a11ywatch/log",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "a nodejs log util to send data to a11yatch logger service.",
   "main": "dist/index.js",
   "scripts": {
