@@ -19,8 +19,11 @@ const log = (
       })
     );
 
+    const logMessage =
+      typeof message === "object" ? JSON.stringify(message) : message;
+
     const data = JSON.stringify({
-      message,
+      message: logMessage,
       platform,
       type,
       container: container || (config && config.container)
