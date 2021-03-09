@@ -15,9 +15,7 @@ const log = (message: string, options?: LogInput): void => {
   }
   try {
     spawn("node", [
-      `${__dirname}/log-event.${
-        process.env.NODE_ENV === "production" ? "js" : "ts"
-      }`,
+      `${__dirname}/log-event`,
       JSON.stringify([message, options, config])
     ]).unref();
   } catch (e) {
